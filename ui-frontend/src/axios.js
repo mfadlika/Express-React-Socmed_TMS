@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://express-react-socmed-tms.vercel.app",
+  baseURL: "http://localhost:5050/",
 });
 
 export default instance;
