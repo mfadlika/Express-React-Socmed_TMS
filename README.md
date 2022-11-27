@@ -37,7 +37,7 @@ $ touch .env
 ### 4. Run Backend
 
 - Set up port
-  - In .env file update PORT=5000
+  - In .env file update PORT=5050
 - Set up jsonwebtoken
   - In .env file update JWT_SECRET='SOMETHINGSECRET'
 
@@ -54,3 +54,12 @@ $ cd ui-frontend
 $ npm install
 $ npm start
 ```
+
+## Beta Version
+
+### Features
+
+- User can register an account to to-my.space
+- User can follow other accounts
+- User can post a post
+- User can see posts from account they follow
