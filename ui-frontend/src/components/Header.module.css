@@ -1,0 +1,8 @@
+
+.navlink {
+  color: whitesmoke;
+}
+
+.navlink:hover {
+  color: grey;
+}
