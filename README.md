@@ -2,7 +2,7 @@
 
 # Express and React Social Media Project
 
-This is a project building a social media platform using React to build frontend or client-side, Express to handle the server-side and MongoDB & Mongoose to store the database.
+This is a project building a social media platform using React & Redux to build frontend or client-side, Node & Express to handle the server-side and MongoDB & Mongoose to store the database.
 
 ## Demo Website
 
