@@ -55,11 +55,21 @@ $ npm install
 $ npm start
 ```
 
+# Update
+
 ## Beta Version
 
-### Features
+### Version 0.1.X 30-Nov-22
 
-- User can register an account to to-my.space
-- User can follow other accounts
-- User can post a post
-- User can see posts from account they follow
+- New Features
+  - User can unfollow acoount they followed
+  - User can delete their posts
+  - Fixed some bugs
+
+### Version 0.1.0 27-Nov-22
+
+- Features
+  - User can register an account to to-my.space
+  - User can follow other accounts
+  - User can post a post
+  - User can see posts from account they follow

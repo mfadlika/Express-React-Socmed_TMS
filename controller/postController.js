@@ -1,11 +1,13 @@
 const expressAsyncHandler = require("express-async-handler");
 const Post = require("../models/postModel.js");
 const User = require("../models/userModel.js");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.postSendPost = expressAsyncHandler(async (req, res) => {
   const post = await new Post({
     post: req.body.post,
     username: req.body.username,
+    date: new Date(),
   });
   post.save();
 });
@@ -32,4 +34,18 @@ exports.getFetchData = expressAsyncHandler(async (req, res) => {
     data = followingList[0].following;
   }
   res.send([posts, data]);
+});
+
+exports.getFetchOneData = expressAsyncHandler(async (req, res) => {
+  const id = new ObjectId(req.params._id);
+  const post = await Post.findById(id);
+  const data = [];
+  res.send([[post], data]);
+});
+
+exports.delData = expressAsyncHandler(async (req, res) => {
+  if (req.body.username === req.params.userId) {
+    const id = new ObjectId(req.params._id);
+    await Post.findByIdAndDelete(id);
+  }
 });

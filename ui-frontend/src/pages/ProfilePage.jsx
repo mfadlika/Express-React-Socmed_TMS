@@ -6,16 +6,14 @@ import { getData } from "../store/actions/postAction";
 import axios from "../axios";
 import Post from "../components/Post";
 import photo from "../assets/unknown.jpeg";
-import { userFollow, userFollowed } from "../store/actions/userActions";
+import { userFollow, userUnfollow } from "../store/actions/userActions";
 import { toast } from "react-toastify";
 import { getError } from "../utils";
 
 function reducer(state, action) {
   switch (action.type) {
-    case "success":
-      return { ...state, followButton: "unfollow" };
     case "failed":
-      return { followButton: "null", user: "unknown" };
+      return { ...state, followButton: "null", user: "unknown" };
     default:
       throw new Error();
   }
@@ -26,8 +24,7 @@ export default function ProfilePage() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.posts);
   const followingList = useSelector((state) => state.post.followingList) || [];
-  const userSignin = useSelector((state) => state.user.userSignIn);
-  const { userInfo } = userSignin;
+  const { userInfo } = useSelector((state) => state.user.userSignIn);
   const { username } = userInfo || "";
 
   const navigate = useNavigate();
@@ -49,10 +46,14 @@ export default function ProfilePage() {
     userId = username;
   }
 
-  function follow(e) {
-    dispatch(userFollow(username, userId));
-    dispatch(userFollowed(username, userId));
-    dispatchReducer({ type: "success" });
+  function follow() {
+    dispatch(userFollow(username, userId, "follow"));
+    dispatch(userFollow(username, userId, "followed"));
+  }
+
+  function unfollow() {
+    dispatch(userUnfollow(username, userId, "unfollow"));
+    dispatch(userUnfollow(username, userId, "unfollowed"));
   }
 
   useEffect(() => {
@@ -68,7 +69,8 @@ export default function ProfilePage() {
       }
     }
     getPost();
-  }, [dispatch, userId, username]);
+    console.log("hi");
+  }, [dispatch, userId, username, userInfo]);
 
   return (
     <Container>
@@ -83,14 +85,18 @@ export default function ProfilePage() {
           </Col>
           <Col md={10}>
             <Card.Body>
-              <Card.Text>@{user}</Card.Text>
+              {userId === username ? (
+                <Card.Text>@{username}</Card.Text>
+              ) : (
+                <Card.Text>@{user}</Card.Text>
+              )}
             </Card.Body>
-            {username === userId || !userInfo ? null : followingList.includes(
-                userId
-              ) ? (
-              <Button>Unfollow</Button>
+            {username === userId ||
+            !userInfo ||
+            followButton === "null" ? null : followingList.includes(userId) ? (
+              <Button onClick={unfollow}>Unfollow</Button>
             ) : (
-              <Button onClick={follow}>{followButton}</Button>
+              <Button onClick={follow}>Follow</Button>
             )}
           </Col>
         </Row>

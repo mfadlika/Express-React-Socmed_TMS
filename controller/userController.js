@@ -11,6 +11,7 @@ exports.postSignin = expressAsyncHandler(async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        following: user.following,
         token: generateToken(user),
       });
       return;
@@ -59,13 +60,21 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
     });
 });
 
-exports.postFollowing = expressAsyncHandler(async (req, res) => {
+exports.postFollow = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.body.username });
   if (user.following.includes(req.params.userId)) {
     return;
   }
   user.following.push(req.params.userId);
-  await user.save();
+  await user.save().then(
+    res.send({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      following: user.following,
+      token: generateToken(user),
+    })
+  );
 });
 
 exports.postFollowed = expressAsyncHandler(async (req, res) => {
@@ -74,5 +83,31 @@ exports.postFollowed = expressAsyncHandler(async (req, res) => {
     return;
   }
   user.follower.push(req.body.username);
+  await user.save();
+});
+
+exports.delUnfollow = expressAsyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.body.username });
+  if (!user.following.includes(req.params.userId)) {
+    return;
+  }
+  user.following.pull(req.params.userId);
+  await user.save().then(
+    res.send({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      following: user.following,
+      token: generateToken(user),
+    })
+  );
+});
+
+exports.delUnfollowed = expressAsyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.params.userId });
+  if (!user.follower.includes(req.body.username)) {
+    return;
+  }
+  user.follower.pull(req.body.username);
   await user.save();
 });

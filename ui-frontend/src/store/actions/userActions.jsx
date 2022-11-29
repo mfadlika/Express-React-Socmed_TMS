@@ -49,26 +49,117 @@ export const userRegister = (email, username, password) => {
   };
 };
 
-export const userFollow = (username, userId) => {
-  return async () => {
+// export const userFollow = (username, userId, action) => {
+//   return async (dispatch) => {
+//     try {
+//       switch (action) {
+//         case "follow":
+//           const { data } = await axios.post(`/api/user/${action}/${userId}`, {
+//             username,
+//           });
+//           dispatch(
+//             userActions.signIn({
+//               data: data,
+//             })
+//           );
+//           localStorage.setItem("userInfo", JSON.stringify(data));
+//           return;
+//         case "followed":
+//           await axios.post(`/api/user/followed/${userId}`, {
+//             username,
+//           });
+//           return;
+//         case "unfollow":
+//           await axios.delete(`/api/user/unfollow/${userId}`, {
+//             data: { username: username },
+//           });
+//           return;
+//         case "unfollowed":
+//           await axios.delete(`/api/user/unfollowed/${userId}`, {
+//             data: { username: username },
+//           });
+//           return;
+//         default:
+//           throw new Error();
+//       }
+//     } catch (error) {
+//       console.log(`error di sini: /api/user/${action}/${userId}`);
+//     }
+//   };
+// };
+
+export const userFollow = (username, userId, action) => {
+  return async (dispatch) => {
     try {
-      await axios.post(`/api/user/${userId}`, {
+      const { data } = await axios.post(`/api/user/${action}/${userId}`, {
         username,
       });
+      dispatch(
+        userActions.signIn({
+          data: data,
+        })
+      );
+      localStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {
-      console.log("error di sini");
+      console.log(`/api/user/${action}/${userId}`);
     }
   };
 };
 
-export const userFollowed = (username, userId) => {
-  return async () => {
+export const userUnfollow = (username, userId, action) => {
+  return async (dispatch) => {
     try {
-      await axios.post(`/api/user/followed/${userId}`, {
-        username,
+      const { data } = await axios.delete(`/api/user/${action}/${userId}`, {
+        data: { username: username },
       });
+      dispatch(
+        userActions.signIn({
+          data: data,
+        })
+      );
+      localStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {
-      console.log("error di sini");
+      console.log(`/api/user/${action}/${userId}`);
     }
   };
 };
+
+// export const userFollowed = (username, userId) => {
+//   return async () => {
+//     try {
+//       await axios.post(`/api/user/followed/${userId}`, {
+//         username,
+//       });
+//     } catch (error) {
+//       console.log("error di sini");
+//     }
+//   };
+// };
+
+// export const userUnfollow = (username, userId) => {
+//   return async () => {
+//     try {
+//       await axios.delete(`/api/user/unfollow/${userId}`, {
+//         data: {
+//           username: username,
+//         },
+//       });
+//     } catch (error) {
+//       console.log("error di sini");
+//     }
+//   };
+// };
+
+// export const userUnfollowed = (username, userId) => {
+//   return async () => {
+//     try {
+//       await axios.delete(`/api/user/unfollowed/${userId}`, {
+//         data: {
+//           username: username,
+//         },
+//       });
+//     } catch (error) {
+//       console.log("error di sini");
+//     }
+//   };
+// };
