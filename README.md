@@ -59,6 +59,14 @@ $ npm start
 
 ## Beta Version
 
+### Version 0.3.3 7-Dec-22
+
+- New Features
+  - NOTIFICATION!!!
+  - User can like and unlike posts
+  - UI improvements
+  - Fixed some bugs
+
 ### Version 0.1.X 30-Nov-22
 
 - New Features

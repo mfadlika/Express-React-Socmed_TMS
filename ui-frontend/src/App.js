@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Register from "./pages/RegisterPage";
 import StatusPage from "./pages/StatusPage";
+import NotificationPage from "./pages/NotificationPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/:userId/status/:_id" element={<StatusPage />} />
           <Route path="/:userId" element={<ProfilePage />} />
+          <Route path="/notification" element={<NotificationPage />} />
         </Routes>
       </main>
     </BrowserRouter>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Button, Card, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { userSignIn } from "../store/actions/userActions";
@@ -27,44 +28,46 @@ export default function SignInPage() {
     }
   }, [navigate, redirect, userInfo]);
   return (
-    <div>
-      <form className="form" onSubmit={submitHandler}>
-        <div>
-          <h1>Sign In</h1>
-        </div>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            type="username"
-            id="username"
-            placeholder="Enter username"
-            required
-            onChange={(e) => setUsername(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label />
-          <button className="primary" type="submit">
-            Sign In
-          </button>
-        </div>
-        <div>
-          <label />
-          <div>
-            New here? <Link to="/register">Create your account</Link>
-          </div>
-        </div>
-      </form>
+    <div id="signin">
+      <Card>
+        <Form onSubmit={submitHandler}>
+          <Form.Group>
+            <h1 htmlFor="signin">Sign In</h1>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label htmlFor="username">Username</Form.Label>
+            <Form.Control
+              type="username"
+              id="username"
+              placeholder="Enter username"
+              required
+              onChange={(e) => setUsername(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label htmlFor="password">Password</Form.Label>
+            <Form.Control
+              type="password"
+              id="password"
+              placeholder="Enter password"
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label />
+            <Button className="primary" type="submit">
+              Sign In
+            </Button>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label />
+            <div>
+              New here? <Link to="/register">Create your account</Link>
+            </div>
+          </Form.Group>
+        </Form>
+      </Card>
     </div>
   );
 }

@@ -5,6 +5,7 @@ const userRouter = require("./routers/userRouter.js");
 const cors = require("cors");
 const postRouter = require("./routers/postRouter.js");
 const path = require("path");
+const notificationRouter = require("./routers/notificationRouter.js");
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ mongoose.connect(process.env.MONGODB_URL);
 
 app.use("/api/user", userRouter);
 app.use("/api/posting", postRouter);
+app.use("/api/notification", notificationRouter);
 
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });

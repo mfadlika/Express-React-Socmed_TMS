@@ -1,11 +1,91 @@
 body {
   margin: 0;
   background-color: #008abe;
-  /* background-color: black;
-  color: whitesmoke; */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  height: 8vh;
+}
+
+/* SIGN IN PAGE */
+
+#signin,
+#register {
+  display: flex;
+  justify-content: center;
+}
+
+#signin .card,
+#register .card {
+  padding: 5px;
+  margin: 5rem;
+}
+
+#signin h1,
+#register h1 {
+  display: flex;
+  justify-content: center;
+}
+
+#signin div,
+#register div {
+  margin-top: 5px;
+}
+
+#signin button,
+#register button {
+  margin: auto;
+  display: flex;
+  background-color: #008abe;
+}
+
+#homepage {
+  display: flex;
+}
+
+#home {
+  width: 70%;
+  margin: 4px, 4px;
+  padding: 4px;
+  height: 92vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: justify;
+}
+
+#side {
+  width: 30%;
+  margin-left: 5px;
+}
+
+@media screen and (max-width: 700px) {
+  #homepage {
+    flex-direction: column;
+  }
+
+  #home {
+    width: 100%;
+  }
+  #side {
+    width: 100%;
+  }
+}
+
+/* NOTIFICATION PAGE */
+
+.unseen {
+  background-color: white;
+  box-shadow: -3px -3px whitesmoke;
+}
+
+.seen {
+  background-color: whitesmoke;
 }

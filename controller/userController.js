@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel.js");
+const Notification = require("../models/notificationModel.js");
 const { generateToken } = require("../utils.js");
 
 exports.postSignin = expressAsyncHandler(async (req, res) => {
@@ -17,7 +18,7 @@ exports.postSignin = expressAsyncHandler(async (req, res) => {
       return;
     }
   }
-  res.status(401).send({ message: "Invalid email or password" });
+  res.status(401).send({ message: "Invalid username or password" });
 });
 
 exports.postRegister = expressAsyncHandler(async (req, res) => {
@@ -36,6 +37,10 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
     }
   } else if (forbiddenUsername.includes(req.body.username)) {
     return res.status(401).send({ message: "Username forbidden" });
+  } else if (req.body.username.length < 4) {
+    return res
+      .status(401)
+      .send({ message: "Username must be 4 characters minimum" });
   }
   const username = req.body.username;
   const email = req.body.email;
@@ -52,6 +57,7 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        following: user.following,
         token: generateToken(user),
       });
     })
@@ -79,8 +85,26 @@ exports.postFollow = expressAsyncHandler(async (req, res) => {
 
 exports.postFollowed = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.params.userId });
+  console.log(user);
   if (user.follower.includes(req.body.username)) {
     return;
+  } else {
+    // if (!(await Notification.findOne({ postId: user._id }))) {
+    await new Notification({
+      username: req.params.userId,
+      type: "follow",
+      follower: req.body.username,
+      seen: "unseen",
+      postId: user._id,
+    }).save();
+    // }
+    // else {
+    //   const follow = await Notification.findOne({
+    //     postId: user._id,
+    //   });
+    //   follow.follower.push(req.body.username);
+    //   follow.save();
+    // }
   }
   user.follower.push(req.body.username);
   await user.save();
@@ -107,7 +131,31 @@ exports.delUnfollowed = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.params.userId });
   if (!user.follower.includes(req.body.username)) {
     return;
+  } else {
+    const unfollow = await Notification.findOne({ postId: user._id });
+    unfollow.follower.pull(req.body.username);
+    if (unfollow.follower.length === 0) {
+      await Notification.findOneAndRemove({ postId: user._id });
+    } else {
+      unfollow.save();
+    }
   }
   user.follower.pull(req.body.username);
   await user.save();
+});
+
+exports.getRandom = expressAsyncHandler(async (req, res) => {
+  const whoToFollow = await User.find();
+  const user = await User.findOne({ username: req.headers.username });
+  const { following } = user;
+  following.push(req.headers.username);
+  list = whoToFollow.map((props) => {
+    return props.username;
+  });
+  list = list.filter((val) => !following.includes(val));
+  shuffleList = list
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+  res.send([shuffleList[0], shuffleList[1], shuffleList[2]]);
 });

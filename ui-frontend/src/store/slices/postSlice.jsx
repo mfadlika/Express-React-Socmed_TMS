@@ -4,7 +4,6 @@ const postSlice = createSlice({
   name: "post",
   initialState: {
     posts: [],
-    followingList: [],
     status: false,
     loading: false,
   },
@@ -18,11 +17,15 @@ const postSlice = createSlice({
     },
     getPost(state, action) {
       state.posts = action.payload.data;
-      state.followingList = action.payload.followingList;
       state.loading = false;
     },
     setLoading(state, action) {
-      state.loading = true;
+      state.loading = !state.loading;
+    },
+    signOut(state, action) {
+      state.posts = [];
+      state.status = false;
+      state.loading = false;
     },
   },
 });

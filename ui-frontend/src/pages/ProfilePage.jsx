@@ -1,14 +1,15 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Container, Card, Col, Row, Button } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getData } from "../store/actions/postAction";
 import axios from "../axios";
 import Post from "../components/Post";
 import photo from "../assets/unknown.jpeg";
 import { userFollow, userUnfollow } from "../store/actions/userActions";
 import { toast } from "react-toastify";
 import { getError } from "../utils";
+import { postActions } from "../store/slices/postSlice";
+import Loading from "../components/Loading";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -22,10 +23,11 @@ function reducer(state, action) {
 export default function ProfilePage() {
   let { userId } = useParams();
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.post.posts);
-  const followingList = useSelector((state) => state.post.followingList) || [];
   const { userInfo } = useSelector((state) => state.user.userSignIn);
+  const loading = useSelector((state) => state.post.loading);
   const { username } = userInfo || "";
+  const { following } = userInfo || [];
+  const [posts, setPosts] = useState([]);
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -62,15 +64,20 @@ export default function ProfilePage() {
         const { data } = await axios.get(`/api/posting/${userId}`, {
           headers: { username: username },
         });
-        dispatch(getData(data));
+        new Promise(function (resolve, reject) {
+          resolve();
+        }).then(() => {
+          setPosts(data);
+          dispatch(postActions.setLoading());
+        });
       } catch (err) {
         dispatchReducer({ type: "failed" });
         toast.error(getError(err));
       }
     }
     getPost();
-    console.log("hi");
-  }, [dispatch, userId, username, userInfo]);
+    dispatch(postActions.setLoading());
+  }, [dispatch, userId, username]);
 
   return (
     <Container>
@@ -93,7 +100,7 @@ export default function ProfilePage() {
             </Card.Body>
             {username === userId ||
             !userInfo ||
-            followButton === "null" ? null : followingList.includes(userId) ? (
+            followButton === "null" ? null : following.includes(userId) ? (
               <Button onClick={unfollow}>Unfollow</Button>
             ) : (
               <Button onClick={follow}>Follow</Button>
@@ -101,7 +108,19 @@ export default function ProfilePage() {
           </Col>
         </Row>
       </Card>
-      {posts.map(Post)}
+      {loading && <Loading />}
+      {posts.map((props) => (
+        <Post
+          _id={props._id}
+          like={props.like}
+          post={props.post}
+          key={props._id}
+          profileName={props.profileName}
+          username={props.username}
+          usernameOwner={username}
+          createdAt={props.createdAt}
+        ></Post>
+      ))}
     </Container>
   );
 }

@@ -18,13 +18,7 @@ export const sendPost = (post, username) => {
 
 export const getData = (data) => {
   return async (dispatch) => {
-    dispatch(postActions.setLoading());
-    dispatch(
-      postActions.getPost({
-        data: data[0],
-        followingList: data[1],
-      })
-    );
+    dispatch(postActions.getPost({ data: data }));
   };
 };
 

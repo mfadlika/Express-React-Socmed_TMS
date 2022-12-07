@@ -5,3 +5,11 @@
 .navlink:hover {
   color: grey;
 }
+
+.loading {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
