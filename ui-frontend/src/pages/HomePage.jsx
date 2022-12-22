@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Form, Button } from "react-bootstrap";
-import { getData, sendPost, setFalse } from "../store/actions/postAction";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "../axios";
-import Post from "../components/Post";
 import Loading from "../components/Loading";
-import { postActions } from "../store/slices/postSlice";
+import Post from "../components/Post";
 import Side from "../components/Side";
+import { getData, sendPost, setFalse } from "../store/actions/postAction";
+import { postActions } from "../store/slices/postSlice";
+import { baseURL } from "../utils";
 
 async function getPost(dispatch, username, userInfo) {
   const { data } = await axios.get("/api/posting/", {
@@ -23,7 +23,7 @@ export default function HomePage() {
   const posts = useSelector((state) => state.post.posts);
   const loading = useSelector((state) => state.post.loading);
   const { userInfo } = userSignin;
-  const { username } = userInfo || "";
+  const { username, profileName } = userInfo || "";
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -33,9 +33,10 @@ export default function HomePage() {
   const [post, setPost] = useState("");
 
   const dispatch = useDispatch();
+
   const submitPostHandler = (e) => {
     e.preventDefault();
-    dispatch(sendPost(post, username));
+    dispatch(sendPost(post, username, "post"));
   };
 
   useEffect(() => {
@@ -52,27 +53,32 @@ export default function HomePage() {
     }
   }, [isSent, dispatch, username, navigate, redirect, userInfo]);
   return (
-    <Container id="homepage">
-      <div id="home">
-        <Form onSubmit={submitPostHandler} style={{ marginBottom: "15px" }}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Hello {username}!!!</Form.Label>
-            <Form.Control
+    <div id="homepage">
+      <div>
+        <form onSubmit={submitPostHandler} style={{ marginBottom: "15px" }}>
+          <div className="mb-3">
+            <label>Hello {profileName ? profileName : username}!!!</label>
+            <input
               type="text"
+              maxLength="242"
               value={post}
               onChange={(e) => setPost(e.target.value)}
               placeholder="What's happening?"
             />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
+          </div>
+          <div>
+            <button variant="primary" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
         {loading && <Loading />}
         {posts.map((props) => (
           <Post
             _id={props._id}
             like={props.like}
+            image={`${baseURL}/api/user/${props.username}/profile-picture`}
+            comment={props.comment}
             post={props.post}
             key={props._id}
             profileName={props.profileName}
@@ -83,6 +89,6 @@ export default function HomePage() {
         ))}
       </div>
       <Side username={username}></Side>
-    </Container>
+    </div>
   );
 }

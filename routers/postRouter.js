@@ -6,9 +6,8 @@ const {
   getFetchOneData,
   delData,
   postLike,
-  getNotif,
-  getNotification,
-  sendNotif,
+  saveComment,
+  postPhoto,
 } = require("../controller/postController");
 
 const postRouter = express.Router();
@@ -17,9 +16,9 @@ postRouter.post("/", postSendPost);
 
 postRouter.get("/", isAuth, getFetchData);
 
-postRouter.post("/postlike", postLike);
+postRouter.post("/:userId/status/:postId", postSendPost);
 
-// postRouter.get("/getnotif", getNotif);
+postRouter.post("/postlike", isAuth, postLike);
 
 postRouter.get("/:userId", getFetchData);
 

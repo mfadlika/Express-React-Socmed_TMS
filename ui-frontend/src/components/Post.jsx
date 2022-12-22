@@ -1,15 +1,16 @@
-import React from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import axios from "../axios";
-import photo from "../assets/unknown.jpeg";
-import style from "./Post.module.css";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import svg from "../assets/svg-assets";
+import axios from "../axios";
+import style from "./Post.scss";
 
 export default function Post(props) {
+  const { love, loved, comment, xMark } = svg;
   const id = props._id;
+  const userSignin = useSelector((state) => state.user.userSignIn);
+  const { userInfo } = userSignin;
   const usernameOwner = props.usernameOwner;
   var dateNow = new Date();
   var date = new Date(props.createdAt);
@@ -53,11 +54,23 @@ export default function Post(props) {
     e.stopPropagation();
     e.preventDefault();
 
-    const { data } = await axios.post("/api/posting/postlike", {
-      id,
-      usernameOwner,
-    });
-    setLike(data);
+    try {
+      const { data } = await axios.post(
+        "/api/posting/postlike",
+        {
+          id,
+          usernameOwner,
+        },
+        {
+          headers: {
+            authorization: userInfo.token,
+          },
+        }
+      );
+      setLike(data);
+    } catch (err) {
+      toast("you need to log in to like this post");
+    }
   }
 
   async function deletePost(e) {
@@ -91,74 +104,74 @@ export default function Post(props) {
   }, [like, isLike, usernameOwner, isDelete, navigate]);
 
   return (
-    <Card key={props._id} className={style.card}>
-      <NavLink
-        as={Link}
-        className={style.card_nav}
+    <div className="post max-w-sm w-full lg:max-w-full lg:flex">
+      <Link
         to={`/${props.username}/status/${props._id}`}
+        className="border-r border-b border-l border-t border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal"
       >
-        <Row style={{ padding: "0", margin: "0" }}>
-          <Col md={1} sm={1} className={style.col_img}>
-            <Card.Img className={style.img} src={photo} alt="ava"></Card.Img>
-          </Col>
-          <Col md={11} sm={11} style={{ padding: "0" }}>
-            <Card.Body as="h5" className={style.header}>
-              {props.profileName && (
-                <Card.Text className={style.text}>
-                  {" "}
-                  {props.profileName} &nbsp;
-                </Card.Text>
-              )}
-
-              <object>
-                <NavLink
-                  className={style.navlink}
-                  as={Link}
-                  to={`/${props.username}`}
-                >
-                  @{props.username}
-                </NavLink>
-              </object>
-
+        <div className="flex items-center">
+          <img
+            className="w-10 h-10 rounded-full mr-4"
+            src={props.image}
+            alt="profile"
+          />
+          <div className="username basis-4/5 text-sm">
+            <p className="text-gray-900 leading-none">
+              {props.profileName}
               {!_id && (
-                <React.Fragment>
-                  <Card.Text className={style.text}>&nbsp;·&nbsp;</Card.Text>
-                  <small>
-                    <Card.Text>
-                      {Math.trunc(time)} {timeUnit} ago
-                    </Card.Text>
-                  </small>
-                </React.Fragment>
+                <small>
+                  &nbsp;·&nbsp;{Math.trunc(time)} {timeUnit} ago
+                </small>
               )}
-
-              {props.username === usernameOwner && _id ? (
-                <Button className={style.header_button} onClick={deletePost}>
-                  X
-                </Button>
-              ) : null}
-            </Card.Body>
-            <Card.Body style={{ padding: "0" }}>
-              <Card.Text className={style.text}>{props.post}</Card.Text>
-            </Card.Body>
-            <Card.Body className={style.footer}>
-              <object className={style.object}>
-                <Button className={style.like_button} onClick={postLike}>
-                  <span>
-                    <small className="text-muted">
-                      {isLike ? "❤️" : "🤍"}{" "}
-                      {isLike
-                        ? like.length
-                        : like.length === 0
-                        ? null
-                        : like.length}
-                    </small>
-                  </span>
-                </Button>
+              <object>
+                <Link to={`/${props.username}`}>@{props.username}</Link>
               </object>
-            </Card.Body>
-          </Col>
-        </Row>
-      </NavLink>
-    </Card>
+            </p>
+          </div>
+          {props.username === usernameOwner && _id ? (
+            <button className="basis-1/5 del-button" onClick={deletePost}>
+              <div>{xMark}</div>
+            </button>
+          ) : null}
+        </div>
+        <div>
+          <p className="text-gray-700 text-base">{props.post}</p>
+        </div>
+        <div className="flex">
+          <div className="basis-1/5">
+            <object className={style.object}>
+              <button
+                style={{ display: "flex", alignItems: "center" }}
+                onClick={postLike}
+              >
+                {isLike ? loved : love}
+                <div>
+                  &nbsp;&nbsp;
+                  {isLike
+                    ? like.length
+                    : like.length === 0
+                    ? null
+                    : like.length}
+                </div>
+              </button>
+            </object>
+          </div>
+          <div className="basis-1/5">
+            <object className={style.object}>
+              <button
+                style={{ display: "flex", alignItems: "center" }}
+                to={`/${props.username}/status/${props._id}`}
+              >
+                {comment}
+                <div>
+                  &nbsp;&nbsp;
+                  {props.comment > 0 && props.comment}
+                </div>
+              </button>
+            </object>
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 }

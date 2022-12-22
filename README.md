@@ -59,6 +59,15 @@ $ npm start
 
 ## Beta Version
 
+### Version 0.6.0 23-Dec-22
+
+- New Features
+  - User can change profile picture
+  - User can change profile name and bio
+  - Big UI Improvements
+  - Mobile Friendly
+  - Fixed some bugs
+
 ### Version 0.3.3 7-Dec-22
 
 - New Features
@@ -70,7 +79,7 @@ $ npm start
 ### Version 0.1.X 30-Nov-22
 
 - New Features
-  - User can unfollow acoount they followed
+  - User can unfollow account they followed
   - User can delete their posts
   - Fixed some bugs
 

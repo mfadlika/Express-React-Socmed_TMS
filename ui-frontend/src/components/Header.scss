@@ -1,0 +1,22 @@
+@use "../base";
+
+.brand {
+  font-family: base.$font-brand;
+  color: base.$color-teal;
+}
+
+.notif {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

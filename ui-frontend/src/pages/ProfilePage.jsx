@@ -1,15 +1,13 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { Container, Card, Col, Row, Button } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "../axios";
-import Post from "../components/Post";
-import photo from "../assets/unknown.jpeg";
-import { userFollow, userUnfollow } from "../store/actions/userActions";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getError } from "../utils";
-import { postActions } from "../store/slices/postSlice";
+import axios from "../axios";
 import Loading from "../components/Loading";
+import Post from "../components/Post";
+import { userFollow, userUnfollow } from "../store/actions/userActions";
+import { postActions } from "../store/slices/postSlice";
+import { baseURL, getError } from "../utils";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -25,9 +23,10 @@ export default function ProfilePage() {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.user.userSignIn);
   const loading = useSelector((state) => state.post.loading);
-  const { username } = userInfo || "";
+  const { username, profileName, bio } = userInfo || "";
   const { following } = userInfo || [];
   const [posts, setPosts] = useState([]);
+  const [dataZero, setDataZero] = useState([]);
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -46,6 +45,11 @@ export default function ProfilePage() {
       navigate(redirect);
     }
     userId = username;
+  }
+
+  function editProfileHandler(e) {
+    e.preventDefault();
+    navigate(`/${userId}/editprofile`);
   }
 
   function follow() {
@@ -68,6 +72,7 @@ export default function ProfilePage() {
           resolve();
         }).then(() => {
           setPosts(data);
+          setDataZero(data[0]);
           dispatch(postActions.setLoading());
         });
       } catch (err) {
@@ -80,34 +85,48 @@ export default function ProfilePage() {
   }, [dispatch, userId, username]);
 
   return (
-    <Container>
-      <Card>
-        <Row>
-          <Col md={2}>
-            <Card.Img
-              style={{ width: "100%" }}
-              src={photo}
-              alt="ava"
-            ></Card.Img>
-          </Col>
-          <Col md={10}>
-            <Card.Body>
-              {userId === username ? (
-                <Card.Text>@{username}</Card.Text>
-              ) : (
-                <Card.Text>@{user}</Card.Text>
-              )}
-            </Card.Body>
-            {username === userId ||
-            !userInfo ||
-            followButton === "null" ? null : following.includes(userId) ? (
-              <Button onClick={unfollow}>Unfollow</Button>
+    <div id="profilepage">
+      <div className="profilepage w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+        <div className="flex flex-col items-center pb-10">
+          <img
+            className="w-24 h-24 mb-3 rounded-full shadow-lg"
+            src={`${baseURL}/api/user/${userId}/profile-picture`}
+            alt="ava"
+          />
+          <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+            {userId === username ? (
+              <p>{profileName}</p>
             ) : (
-              <Button onClick={follow}>Follow</Button>
+              <p>{dataZero.profileName}</p>
             )}
-          </Col>
-        </Row>
-      </Card>
+          </h5>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {userId === username ? <p>@{username}</p> : <p>@{user}</p>}
+          </span>
+
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {userId === username ? <p>{bio}</p> : <p>{dataZero.bio}</p>}
+          </span>
+          <div className="flex mt-4 space-x-3 md:mt-6">
+            <Link className="button-left inline-flex items-center px-4 py-2 text-sm font-medium text-center rounded-lg focus:ring-4 focus:outline-none">
+              {username === userId || !userInfo || followButton === "null" ? (
+                <button onClick={editProfileHandler}>Edit Profile</button>
+              ) : following.includes(userId) ? (
+                <button onClick={unfollow}>Unfollow</button>
+              ) : (
+                <button onClick={follow}>Follow</button>
+              )}
+            </Link>
+            <Link
+              href="#"
+              className="button-right inline-flex items-center px-4 py-2 text-sm font-medium text-center rounded-lg focus:ring-4 focus:outline-none"
+            >
+              <button>message</button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {loading && <Loading />}
       {posts.map((props) => (
         <Post
@@ -115,12 +134,14 @@ export default function ProfilePage() {
           like={props.like}
           post={props.post}
           key={props._id}
+          comment={props.comment}
+          image={`${baseURL}/api/user/${userId}/profile-picture`}
           profileName={props.profileName}
           username={props.username}
           usernameOwner={username}
           createdAt={props.createdAt}
         ></Post>
       ))}
-    </Container>
+    </div>
   );
 }

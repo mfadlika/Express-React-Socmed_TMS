@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { userSignIn } from "../store/actions/userActions";
 
 export default function SignInPage() {
@@ -29,45 +28,52 @@ export default function SignInPage() {
   }, [navigate, redirect, userInfo]);
   return (
     <div id="signin">
-      <Card>
-        <Form onSubmit={submitHandler}>
-          <Form.Group>
-            <h1 htmlFor="signin">Sign In</h1>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label htmlFor="username">Username</Form.Label>
-            <Form.Control
-              type="username"
+      <div className="card-signin">
+        <form onSubmit={submitHandler}>
+          <div>
+            <h1 className="text-3xl font-bold underline" htmlFor="signin">
+              Sign In
+            </h1>
+          </div>
+          <div>
+            <label htmlFor="username">Username</label>
+            <input
+              maxLength="15"
+              type="text"
               id="username"
               placeholder="Enter username"
               required
               onChange={(e) => setUsername(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label htmlFor="password">Password</Form.Label>
-            <Form.Control
+            ></input>
+          </div>
+          <div>
+            <label htmlFor="password">Password</label>
+            <input
+              maxLength="30"
               type="password"
               id="password"
               placeholder="Enter password"
               required
               onChange={(e) => setPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label />
-            <Button className="primary" type="submit">
+            ></input>
+          </div>
+          <div>
+            <label />
+            <button className="signin-button" type="submit">
               Sign In
-            </Button>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label />
+            </button>
+          </div>
+          <div>
+            <label />
             <div>
-              New here? <Link to="/register">Create your account</Link>
+              New here?
+              <Link className="register-link" to="/register">
+                Create your account
+              </Link>
             </div>
-          </Form.Group>
-        </Form>
-      </Card>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

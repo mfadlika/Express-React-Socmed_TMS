@@ -7,7 +7,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 exports.getNotif = expressAsyncHandler(async (req, res) => {
   const like = await Notification.find({
     username: req.headers.username,
-  }).sort({ updatedAt: -1 });
+  }).sort({ dateUpdated: -1 });
   const newLike = await Notification.find({
     username: req.headers.username,
     seen: "unseen",
@@ -19,6 +19,6 @@ exports.postSetSeen = expressAsyncHandler(async (req, res) => {
   const seen = await Notification.find({ username: req.body.username });
   seen.map((props) => {
     props.seen = "seen";
-    props.save()
+    props.save();
   });
 });

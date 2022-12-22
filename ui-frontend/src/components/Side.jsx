@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { Card } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "../axios";
-import style from "./Side.module.css";
+import "./Side.scss";
 
 export default function Side(props) {
-  const [whoToFollow, setWhoToFollow] = useState([]);
+  const [whoToFollow, setWhoToFollow] = useState([{}]);
 
   useEffect(() => {
     async function getWhoToFollow() {
@@ -27,28 +25,44 @@ export default function Side(props) {
   }, [props.username]);
 
   return (
-    <div id="side" className={style.side}>
-      <Card className={style.card}>
-        <Card.Header>People to follow</Card.Header>
-        <Card.Body>
-          {whoToFollow.map((props, num) => {
-            return (
-              <React.Fragment key={num}>
-                {props === null ? null : (
-                  <Card.Text
-                    as={Link}
-                    to={`/${props}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    {props}
-                  </Card.Text>
-                )}
-                <br></br>
-              </React.Fragment>
-            );
-          })}{" "}
-        </Card.Body>
-      </Card>
+    <div id="side">
+      <div className="w-full max-w-md p-4 bg-white border rounded-lg shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+        <div className="flex items-center justify-between mb-4">
+          <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-black">
+            Who To Follow
+          </h5>
+        </div>
+        {whoToFollow.map((props, num) => {
+          if (props === null) {
+            return null;
+          }
+          return (
+            <Link to={`/${props.username}`} key={num} className="flow-root">
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                <li className="py-3 sm:py-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      <img
+                        className="w-8 h-8 rounded-full"
+                        src={props.picture}
+                        alt="Neil"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                        {props.profileName}
+                      </p>
+                      <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                        @{props.username}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

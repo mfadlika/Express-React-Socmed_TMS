@@ -3,3 +3,5 @@ export const getError = (error) => {
     ? error.response.data.message
     : error.message;
 };
+
+export const baseURL = "http://localhost:5050";

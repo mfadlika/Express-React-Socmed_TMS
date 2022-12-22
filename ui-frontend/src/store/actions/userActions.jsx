@@ -1,7 +1,7 @@
-import { userActions } from "../slices/userSlice";
-import axios from "../../axios";
 import { toast } from "react-toastify";
+import axios from "../../axios";
 import { getError } from "../../utils";
+import { userActions } from "../slices/userSlice";
 
 export const userSignIn = (username, password) => {
   return async (dispatch) => {

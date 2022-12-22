@@ -1,0 +1,199 @@
+@use "base";
+
+/* HEADER */
+
+#header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  height: 8vh;
+  background-color: base.$color-black;
+  color: base.$color-white;
+  align-items: center;
+  text-align: center;
+  padding: 3%;
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    div {
+      display: flex;
+      height: 100%;
+      a {
+        padding: 0;
+      }
+    }
+  }
+  a:hover {
+    color: base.$color-blue;
+  }
+}
+
+/* SIGN IN PAGE */
+
+#signin {
+  color: base.$color-black;
+}
+
+.card-signin {
+  background-color: base.$color-cream;
+  display: flex;
+  justify-content: center;
+  margin: 5%;
+  padding: 5%;
+  border-radius: 10%;
+  h1 {
+    color: base.$color-blue;
+  }
+  div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    text-align: center;
+    width: 100%;
+    margin: 5% 0;
+    input,
+    button {
+      border-radius: 25px;
+      border-style: double;
+      border-color: base.$color-blue;
+      text-align: center;
+    }
+  }
+}
+
+.signin-button {
+  width: 50%;
+  margin: auto;
+  background-color: base.$color-blue;
+  color: base.$color-white;
+}
+
+.register-link {
+  text-decoration: none;
+  color: base.$color-blue;
+}
+
+/* HOME PAGE */
+
+#homepage {
+  div {
+    form {
+      div {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        text-align: center;
+        width: 80%;
+        margin: auto;
+        label {
+          font-family: base.$font-brand;
+          margin: 3%;
+          color: base.$color-black;
+        }
+        input {
+          padding-left: 3%;
+          border-radius: 25px;
+          border-color: base.$color-blue;
+        }
+        button {
+          display: flex;
+          justify-content: center;
+          width: 25%;
+          margin: auto;
+          background-color: base.$color-cream;
+          border-radius: 25px;
+          border-style: double;
+          border-color: base.$color-blue;
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+/* PROFILE PAGE */
+
+.profilepage {
+  background-color: base.$color-white;
+  margin: 3% auto;
+  img {
+    margin-top: 3%;
+  }
+  h5 {
+    color: base.$color-blue;
+  }
+  div {
+    .button-left {
+      background-color: base.$color-blue;
+      color: base.$color-white;
+      width: 50%;
+      text-align: center;
+    }
+    .button-left:hover {
+      background-color: base.$color-white;
+      color: base.$color-blue;
+    }
+    .button-right {
+      background-color: base.$color-white;
+      color: base.$color-blue;
+      width: 50%;
+      text-align: center;
+    }
+    .button-right:hover {
+      background-color: base.$color-blue;
+      color: base.$color-white;
+    }
+  }
+}
+
+/* EDIT PROFILE */
+
+.card-edit {
+  background-color: base.$color-cream;
+  display: flex;
+  justify-content: center;
+  margin: 5%;
+  padding: 5%;
+  border-radius: 10%;
+  h1 {
+    color: base.$color-blue;
+  }
+  div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    text-align: center;
+    width: 100%;
+    margin: 5% 0;
+    input,
+    select {
+      width: 80%;
+    }
+    input,
+    select,
+    button {
+      margin: auto;
+      border-radius: 25px;
+      border-style: double;
+      border-color: base.$color-blue;
+      text-align: center;
+    }
+  }
+}
+
+.edit-button {
+  width: 50%;
+  margin: auto;
+  background-color: base.$color-blue;
+  color: base.$color-white;
+}
+
+.register-link {
+  text-decoration: none;
+  color: base.$color-blue;
+}
+
+/* NOTIFICATION PAGE */

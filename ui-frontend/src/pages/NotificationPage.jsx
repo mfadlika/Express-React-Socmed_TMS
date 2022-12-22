@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Card, Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -14,9 +13,9 @@ export default function NotificationPage() {
   useEffect(() => {
     const intervalId = setInterval(async () => {
       await axios.post("/api/notification", { username });
-    }, 3000);
+    }, 1500);
     return () => clearInterval(intervalId);
-  }, [username]);
+  }, [username, userInfo.token]);
 
   return (
     <Container>
@@ -39,6 +38,14 @@ export default function NotificationPage() {
                 }}
                 className={props.seen}
               >
+                {props.type === "comment" && (
+                  <React.Fragment>
+                    <Card.Header>
+                      {props.commenter} commented on your post:
+                      <Card.Text>"{props.post}"</Card.Text>
+                    </Card.Header>
+                  </React.Fragment>
+                )}
                 {props.type === "follow" && props.follower.length === 1 && (
                   <Card.Text style={{ paddingLeft: "15px" }}>
                     {props.follower[0]} follows you

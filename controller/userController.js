@@ -1,8 +1,10 @@
 const expressAsyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("cloudinary");
 const User = require("../models/userModel.js");
 const Notification = require("../models/notificationModel.js");
 const { generateToken } = require("../utils.js");
+const Post = require("../models/postModel.js");
 
 exports.postSignin = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.body.username });
@@ -11,8 +13,12 @@ exports.postSignin = expressAsyncHandler(async (req, res) => {
       res.send({
         _id: user._id,
         username: user.username,
+        profileName: user.profileName,
         email: user.email,
+        bio: user.bio,
+        gender: user.gender,
         following: user.following,
+        follower: user.follower,
         token: generateToken(user),
       });
       return;
@@ -45,25 +51,37 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = bcrypt.hashSync(req.body.password);
-  const user = await new User({
-    username: username,
-    email: email,
-    password: password,
-  });
-  user
-    .save()
-    .then(() => {
-      res.send({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        following: user.following,
-        token: generateToken(user),
+  cloudinary.v2.uploader.upload(
+    "images/unknown.jpeg",
+    { folder: "profile", public_id: req.params.userId },
+    async function (error, result) {
+      const user = await new User({
+        username: username,
+        email: email,
+        password: password,
+        picture: result.url,
       });
-    })
-    .catch((err) => {
-      res.status(404).send({ message: err });
-    });
+
+      user
+        .save()
+        .then(() => {
+          res.send({
+            _id: user._id,
+            username: user.username,
+            profileName: user.profileName,
+            email: user.email,
+            bio: user.bio,
+            gender: user.gender,
+            following: user.following,
+            follower: user.follower,
+            token: generateToken(user),
+          });
+        })
+        .catch((err) => {
+          res.status(404).send({ message: err });
+        });
+    }
+  );
 });
 
 exports.postFollow = expressAsyncHandler(async (req, res) => {
@@ -76,8 +94,12 @@ exports.postFollow = expressAsyncHandler(async (req, res) => {
     res.send({
       _id: user._id,
       username: user.username,
+      profileName: user.profileName,
       email: user.email,
+      bio: user.bio,
+      gender: user.gender,
       following: user.following,
+      follower: user.follower,
       token: generateToken(user),
     })
   );
@@ -96,6 +118,8 @@ exports.postFollowed = expressAsyncHandler(async (req, res) => {
       follower: req.body.username,
       seen: "unseen",
       postId: user._id,
+      dateUpdated: new Date(),
+      dateBefore: new Date(),
     }).save();
     // }
     // else {
@@ -120,8 +144,12 @@ exports.delUnfollow = expressAsyncHandler(async (req, res) => {
     res.send({
       _id: user._id,
       username: user.username,
+      profileName: user.profileName,
       email: user.email,
+      bio: user.bio,
+      gender: user.gender,
       following: user.following,
+      follower: user.follower,
       token: generateToken(user),
     })
   );
@@ -150,12 +178,111 @@ exports.getRandom = expressAsyncHandler(async (req, res) => {
   const { following } = user;
   following.push(req.headers.username);
   list = whoToFollow.map((props) => {
-    return props.username;
+    return {
+      username: props.username,
+      picture: props.picture,
+      profileName: props.profileName,
+    };
   });
-  list = list.filter((val) => !following.includes(val));
+  list = list.filter((val) => !following.includes(val.username));
+
   shuffleList = list
     .map((value) => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
+
   res.send([shuffleList[0], shuffleList[1], shuffleList[2]]);
+});
+
+exports.postEditProfile = expressAsyncHandler(async (req, res) => {
+  const image = req.file;
+  const name = req.body.name;
+  const bio = req.body.bio;
+  const gender = req.body.gender;
+
+  if (image) {
+    cloudinary.v2.uploader.upload(
+      image.path,
+      {
+        folder: "profile",
+        public_id: req.params.userId,
+        invalidate: true,
+      },
+      async function (error, result) {
+        const user = await User.findOne({ username: req.params.userId });
+        user.picture = result.url;
+        if (name !== user.name) {
+          user.profileName = name;
+          const post = await Post.find({ username: req.params.userId });
+          post.map((props) => {
+            props.profileName = name;
+            props.save();
+          });
+        }
+        if (bio !== user.bio) {
+          user.bio = bio;
+        }
+        if (gender !== user.gender) {
+          if (gender === "null") {
+            user.gender = null;
+          } else {
+            user.gender = gender;
+          }
+        }
+        user.save().then(
+          res.send({
+            _id: user._id,
+            username: user.username,
+            profileName: user.profileName,
+            email: user.email,
+            bio: user.bio,
+            gender: user.gender,
+            following: user.following,
+            follower: user.follower,
+            token: generateToken(user),
+          })
+        );
+      }
+    );
+  } else {
+    const user = await User.findOne({ username: req.params.userId });
+    if (name !== user.name) {
+      user.profileName = name;
+      const post = await Post.find({ username: req.params.userId });
+      post.map((props) => {
+        props.profileName = name;
+        props.save();
+      });
+    }
+    if (bio !== user.bio) {
+      user.bio = bio;
+    }
+    if (gender !== user.gender) {
+      console.log(gender);
+      if (gender === "null") {
+        user.gender = null;
+      } else {
+        user.gender = gender;
+      }
+    }
+    await user.save().then(
+      res.send({
+        _id: user._id,
+        username: user.username,
+        profileName: user.profileName,
+        email: user.email,
+        bio: user.bio,
+        gender: user.gender,
+        following: user.following,
+        follower: user.follower,
+        token: generateToken(user),
+      })
+    );
+  }
+});
+
+exports.getProfilePicture = expressAsyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.params.userId });
+
+  res.redirect(user.picture);
 });

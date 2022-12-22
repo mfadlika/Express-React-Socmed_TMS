@@ -1,3 +1,4 @@
+const { urlencoded } = require("express");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -10,6 +11,7 @@ const userSchema = new mongoose.Schema(
     gender: { type: String },
     following: [],
     follower: [],
+    picture: { type: String },
   },
   {
     timestamps: true,

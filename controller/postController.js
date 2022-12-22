@@ -7,13 +7,40 @@ const ObjectId = require("mongoose").Types.ObjectId;
 exports.postSendPost = expressAsyncHandler(async (req, res) => {
   const data = await User.find({ username: req.body.username });
   const [{ profileName }] = data;
-  console.log(data);
+  let postId = req.params.postId;
+
+  if (!req.params.postId) {
+    postId = null;
+  }
+
   const post = await new Post({
     post: req.body.post,
+    type: req.body.type,
+    comment: 0,
+    postId: postId,
     username: req.body.username,
     profileName: profileName,
     date: new Date(),
   });
+
+  if (req.params.postId) {
+    if (await Post.find({ _id: postId })) {
+      const post = await Post.findById(postId);
+      post.comment += 1;
+      post.save();
+    }
+    await new Notification({
+      username: req.params.userId,
+      type: "comment",
+      commenter: req.body.username,
+      post: req.body.post,
+      postId: req.params.postId,
+      seen: "unseen",
+      dateUpdated: new Date(),
+      dateBefore: new Date(),
+    }).save();
+  }
+
   post.save();
 });
 
@@ -30,8 +57,10 @@ exports.getFetchData = expressAsyncHandler(async (req, res) => {
     }
     data = req.params.userId;
   }
+
   const posts = await Post.find({
     username: data,
+    type: "post",
   }).sort({
     createdAt: -1,
   });
@@ -41,8 +70,14 @@ exports.getFetchData = expressAsyncHandler(async (req, res) => {
 exports.getFetchOneData = expressAsyncHandler(async (req, res) => {
   const id = new ObjectId(req.params._id);
   const post = await Post.findById(id);
+  const comments = await Post.find({ postId: id });
+
   if (post) {
-    res.send(post);
+    if (comments.length === 0) {
+      res.send([post, []]);
+    } else {
+      res.send([post, comments]);
+    }
   } else {
     res.send(err);
   }
@@ -52,6 +87,9 @@ exports.delData = expressAsyncHandler(async (req, res) => {
   if (req.body.username === req.params.userId) {
     const id = new ObjectId(req.params._id);
     await Post.findByIdAndDelete(id);
+    // const notif = await Notification.deleteMany({
+    //   id,
+    // });
   }
 });
 
@@ -69,11 +107,15 @@ exports.postLike = expressAsyncHandler(async (req, res) => {
         seen: "unseen",
         post: post.post,
         postId: id,
+        dateUpdated: new Date(),
+        dateBefore: new Date(),
       }).save();
     } else {
       const like = await Notification.findOne({ postId: id });
       like.seen = "unseen";
       like.liker.push(req.body.usernameOwner);
+      like.dateBefore = like.dateUpdated;
+      like.dateUpdated = new Date();
       like.save();
     }
   } else {
@@ -83,6 +125,7 @@ exports.postLike = expressAsyncHandler(async (req, res) => {
     if (like.liker.length === 0) {
       await Notification.findOneAndRemove({ postId: id });
     } else {
+      like.dateUpdated = like.dateBefore;
       like.save();
     }
   }

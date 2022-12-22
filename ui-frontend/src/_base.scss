@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Permanent+Marker&family=Rubik+Vinyl&display=swap");
+
+$font-base: "Montserrat", sans-serif;
+$font-brand: "Rubik Vinyl", cursive;
+
+$color-black: #393e46;
+$color-green: #6d9886;
+$color-cream: #f2e7d5;
+$color-white: #f7f7f7;
+$color-blue: #82aae3;
+$color-teal: #91d8e4;
+$color-red: #E97777;
+
+$breakpoint-mobile: 768px;
+
+body {
+    background-color: $color-teal;
+  font-family: $font-base;
+  width: 100vw;
+  height: 100vh;
+}

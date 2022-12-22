@@ -12,10 +12,13 @@ const likeSchema = new mongoose.Schema(
 const postSchema = new mongoose.Schema(
   {
     post: { type: String, required: true },
+    profileName: { type: String },
+    type: { type: String, required: true },
+    postId: { type: String },
+    comment: { type: Number },
     username: { type: String, required: true },
     profileName: { type: String },
     like: [likeSchema],
-    comment: [],
   },
   {
     timestamps: true,

@@ -1,5 +1,5 @@
-import { notifActions } from "../slices/notifSlice";
 import axios from "../../axios";
+import { notifActions } from "../slices/notifSlice";
 
 export const getNotif = (username) => {
   return async (dispatch) => {

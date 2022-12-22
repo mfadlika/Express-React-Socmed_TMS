@@ -6,9 +6,12 @@ const notificationSchema = new mongoose.Schema(
     type: { type: String, required: true },
     follower: [],
     liker: [],
+    commenter: { type: String },
     seen: { type: String, required: true },
     post: { type: String },
     postId: { type: String },
+    dateUpdated: { type: Date, required: true },
+    dateBefore: { type: Date, required: true },
   },
   {
     timestamps: true,
