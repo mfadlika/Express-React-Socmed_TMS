@@ -7,7 +7,7 @@ import { getNotif } from "../store/actions/notifAction";
 import { userSignOut } from "../store/actions/userActions";
 import { notifActions } from "../store/slices/notifSlice";
 import { postActions } from "../store/slices/postSlice";
-import "./Header.scss";
+import "./header.scss";
 
 export default function Header() {
   const { logout } = svgAssets;

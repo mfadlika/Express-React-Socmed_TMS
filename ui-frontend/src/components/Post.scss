@@ -6,6 +6,10 @@
   color: base.$color-black;
   border-radius: 25px;
   a {
+    @media screen and (min-width: 1000px) {
+      width: 50%;
+      margin: auto;
+    }
     padding-top: 3% !important;
     padding-bottom: 1% !important;
     div {
@@ -25,8 +29,8 @@
         border-radius: 9999px;
       }
       svg:hover {
-        background-color:  base.$color-red;
-        fill:  base.$color-white;
+        background-color: base.$color-red;
+        fill: base.$color-white;
       }
     }
   }

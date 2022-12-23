@@ -1,9 +1,9 @@
 import Spinner from "react-bootstrap/Spinner";
-import style from "./Header.scss";
+import "./header.scss";
 
 export default function Loading() {
   return (
-    <Spinner animation="border" role="status" className={style.loading}>
+    <Spinner animation="border" role="status" className="loading">
       <span className="visually-hidden">Loading...</span>
     </Spinner>
   );

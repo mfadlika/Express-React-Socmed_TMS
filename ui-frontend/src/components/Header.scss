@@ -20,3 +20,10 @@
   margin-top: 15px;
   margin-bottom: 15px;
 }
+
+.text-sm,
+.text-xs {
+  @media screen and (min-width: 500px) {
+    font-size: large !important;
+  }
+}

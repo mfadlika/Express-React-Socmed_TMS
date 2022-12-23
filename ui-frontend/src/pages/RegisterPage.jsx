@@ -7,6 +7,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -22,11 +23,38 @@ export default function Register() {
     dispatch(userRegister(email, username, password));
   };
 
+  const userMatch = username.match(/^[A-Za-z0-9._]+$/);
+  const emailMatch = email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,5})+$/);
+  const passwordMatch = password.match(
+    /^(?=.*[0-9])(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{6,30}$/
+  );
+
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
     }
-  }, [navigate, redirect, userInfo]);
+    if (
+      username.length >= 3 &&
+      password.length >= 6 &&
+      userMatch &&
+      emailMatch &&
+      passwordMatch
+    ) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [
+    navigate,
+    redirect,
+    userInfo,
+    username,
+    password,
+    isDisabled,
+    userMatch,
+    emailMatch,
+    passwordMatch,
+  ]);
   return (
     <div id="register">
       <div className="card-signin">
@@ -46,6 +74,11 @@ export default function Register() {
               required
               onChange={(e) => setUsername(e.target.value)}
             ></input>
+            <label className="text-xs label-warning" htmlFor="username-warning">
+              {username.length !== 0 &&
+                !userMatch &&
+                "username contains prohibited character"}
+            </label>
           </div>
           <div>
             <label htmlFor="email">Email</label>
@@ -56,6 +89,9 @@ export default function Register() {
               required
               onChange={(e) => setEmail(e.target.value)}
             ></input>
+            <label className="text-xs label-warning" htmlFor="email-warning">
+              {email.length !== 0 && !emailMatch && "wrong email format"}
+            </label>
           </div>
           <div>
             <label htmlFor="password">Password</label>
@@ -67,10 +103,21 @@ export default function Register() {
               required
               onChange={(e) => setPassword(e.target.value)}
             ></input>
+            <label className="text-xs label-warning" htmlFor="password-warning">
+              {password.length >= 6 &&
+                !passwordMatch &&
+                "password needs at least one special character"}
+            </label>
           </div>
           <div>
             <label />
-            <button className="signin-button" type="submit">
+            <button
+              disabled={isDisabled}
+              className={
+                isDisabled ? "signin-button-disabled" : "signin-button"
+              }
+              type="submit"
+            >
               Sign Up
             </button>
           </div>

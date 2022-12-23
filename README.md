@@ -59,12 +59,12 @@ $ npm start
 
 ## Beta Version
 
-### Version 0.6.0 23-Dec-22
+### Version 0.6.X 23-Dec-22
 
 - New Features
   - User can change profile picture
   - User can change profile name and bio
-  - Big UI Improvements
+  - Big UI ImprovementS
   - Mobile Friendly
   - Fixed some bugs
 

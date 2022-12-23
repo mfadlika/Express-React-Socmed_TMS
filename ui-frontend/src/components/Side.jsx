@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "../axios";
-import "./Side.scss";
+import "./side.scss";
 
 export default function Side(props) {
   const [whoToFollow, setWhoToFollow] = useState([{}]);

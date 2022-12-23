@@ -10,6 +10,8 @@ const {
   getRandom,
   postEditProfile,
   getProfilePicture,
+  getFollowingList,
+  getUserData,
 } = require("../controller/userController.js");
 
 const userRouter = express.Router();
@@ -31,5 +33,9 @@ userRouter.delete("/unfollowed/:userId", delUnfollowed);
 userRouter.post("/:userId/editprofile", postEditProfile);
 
 userRouter.get("/random", getRandom);
+
+userRouter.get("/followingList", getFollowingList);
+
+userRouter.get("/:userId", getUserData)
 
 module.exports = userRouter;

@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "../axios";
+import FollowingList from "../components/Modal.jsx/FollowingListModal";
 import Loading from "../components/Loading";
 import Post from "../components/Post";
 import { userFollow, userUnfollow } from "../store/actions/userActions";
 import { postActions } from "../store/slices/postSlice";
 import { baseURL, getError } from "../utils";
+import picture from "../assets/unknown.jpeg";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -23,10 +25,12 @@ export default function ProfilePage() {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.user.userSignIn);
   const loading = useSelector((state) => state.post.loading);
-  const { username, profileName, bio } = userInfo || "";
+  const { username } = userInfo || "";
   const { following } = userInfo || [];
   const [posts, setPosts] = useState([]);
-  const [dataZero, setDataZero] = useState([]);
+  const [dataUser, setDataUser] = useState([]);
+  const [toggleButton, setToggleButton] = useState("");
+  const [data, setData] = useState([]);
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -45,6 +49,26 @@ export default function ProfilePage() {
       navigate(redirect);
     }
     userId = username;
+  }
+
+  async function toggleHandler(e) {
+    let action = e.target.value;
+    try {
+      const data = await axios.get("/api/user/followingList", {
+        headers: {
+          username: userId === " profile" ? username : userId,
+          action: action,
+        },
+      });
+      setData(data.data);
+    } catch (error) {
+      console.log("error");
+    }
+    setToggleButton(e.target.value);
+  }
+
+  function toggleClose() {
+    setToggleButton("");
   }
 
   function editProfileHandler(e) {
@@ -72,7 +96,6 @@ export default function ProfilePage() {
           resolve();
         }).then(() => {
           setPosts(data);
-          setDataZero(data[0]);
           dispatch(postActions.setLoading());
         });
       } catch (err) {
@@ -80,9 +103,24 @@ export default function ProfilePage() {
         toast.error(getError(err));
       }
     }
+    async function getUserData() {
+      try {
+        const { data } = await axios.get(`/api/user/${userId}`, {
+          headers: { username: userId },
+        });
+        new Promise(function (resolve, reject) {
+          resolve();
+        }).then(() => {
+          setDataUser(data);
+        });
+      } catch (err) {
+        console.log("error");
+      }
+    }
     getPost();
+    getUserData();
     dispatch(postActions.setLoading());
-  }, [dispatch, userId, username]);
+  }, [dispatch, userId, username, toggleButton]);
 
   return (
     <div id="profilepage">
@@ -90,25 +128,25 @@ export default function ProfilePage() {
         <div className="flex flex-col items-center pb-10">
           <img
             className="w-24 h-24 mb-3 rounded-full shadow-lg"
-            src={`${baseURL}/api/user/${userId}/profile-picture`}
+            src={
+              user === "unknown"
+                ? picture
+                : `${baseURL}/api/user/${userId}/profile-picture`
+            }
             alt="ava"
           />
           <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-            {userId === username ? (
-              <p>{profileName}</p>
-            ) : (
-              <p>{dataZero.profileName}</p>
-            )}
+            <p>{dataUser.profileName}</p>
           </h5>
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            {userId === username ? <p>@{username}</p> : <p>@{user}</p>}
+            @{user === "unknown" ? user : dataUser.username}
           </span>
 
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            {userId === username ? <p>{bio}</p> : <p>{dataZero.bio}</p>}
+            <p>{dataUser.bio}</p>
           </span>
           <div className="flex mt-4 space-x-3 md:mt-6">
-            <Link className="button-left inline-flex items-center px-4 py-2 text-sm font-medium text-center rounded-lg focus:ring-4 focus:outline-none">
+            <Link className="button-edit inline-flex items-center px-2 py-2 text-sm font-medium text-center rounded-lg focus:ring-4 focus:outline-none">
               {username === userId || !userInfo || followButton === "null" ? (
                 <button onClick={editProfileHandler}>Edit Profile</button>
               ) : following.includes(userId) ? (
@@ -117,12 +155,22 @@ export default function ProfilePage() {
                 <button onClick={follow}>Follow</button>
               )}
             </Link>
-            <Link
-              href="#"
+          </div>
+          <div className="flex mt-4 space-x-3 md:mt-6">
+            <button
               className="button-right inline-flex items-center px-4 py-2 text-sm font-medium text-center rounded-lg focus:ring-4 focus:outline-none"
+              value="following"
+              onClick={toggleHandler}
             >
-              <button>message</button>
-            </Link>
+              following
+            </button>
+            <button
+              className="button-left inline-flex items-center px-4 py-2 text-sm font-medium text-center rounded-lg focus:ring-4 focus:outline-none"
+              value="follower"
+              onClick={toggleHandler}
+            >
+              follower
+            </button>
           </div>
         </div>
       </div>
@@ -142,6 +190,11 @@ export default function ProfilePage() {
           createdAt={props.createdAt}
         ></Post>
       ))}
+      <FollowingList
+        data={data}
+        isHidden={toggleButton}
+        toggle={toggleClose}
+      ></FollowingList>
     </div>
   );
 }

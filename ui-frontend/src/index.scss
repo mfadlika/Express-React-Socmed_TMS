@@ -43,6 +43,10 @@
   margin: 5%;
   padding: 5%;
   border-radius: 10%;
+  @media screen and (min-width: 700px) {
+    width: 35%;
+    margin: 5% auto;
+  }
 }
 
 .card-signin {
@@ -72,6 +76,17 @@
   margin: auto;
   background-color: base.$color-blue;
   color: base.$color-white;
+}
+
+.signin-button-disabled {
+  width: 50%;
+  margin: auto;
+  background-color: base.$color-black;
+  color: base.$color-white;
+}
+
+.label-warning {
+  color: base.$color-red;
 }
 
 .register-link {
@@ -115,6 +130,19 @@
       }
     }
   }
+
+  @media screen and (min-width: 1000px) {
+    display: flex;
+    justify-content: center;
+    #home {
+      width: 70%;
+    }
+    #side {
+      height: 30%;
+      width: 20%;
+      margin: 5%;
+    }
+  }
 }
 
 /* PROFILE PAGE */
@@ -129,10 +157,16 @@
     color: base.$color-blue;
   }
   div {
+    .button-edit {
+      background-color: base.$color-blue;
+      color: base.$color-white;
+      text-align: center;
+      padding: 1%;
+      width: 100%;
+    }
     .button-left {
       background-color: base.$color-blue;
       color: base.$color-white;
-      width: 50%;
       text-align: center;
     }
     .button-left:hover {
@@ -142,7 +176,6 @@
     .button-right {
       background-color: base.$color-white;
       color: base.$color-blue;
-      width: 50%;
       text-align: center;
     }
     .button-right:hover {
@@ -204,4 +237,35 @@
   color: base.$color-blue;
 }
 
-/* NOTIFICATION PAGE */
+/* COMMENT PAGE */
+
+.comment {
+  div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    text-align: center;
+    width: 80%;
+    margin: auto;
+    input {
+      padding-left: 3%;
+      border-radius: 25px;
+      border-color: base.$color-blue;
+      margin-bottom: 3%;
+    }
+    button {
+      display: flex;
+      justify-content: center;
+      width: 25%;
+      margin: auto;
+      background-color: base.$color-cream;
+      border-radius: 25px;
+      border-style: double;
+      border-color: base.$color-blue;
+      text-align: center;
+    }
+    @media screen and (min-width: 1000px) {
+      width: 50%;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+@use "../../base";
+
+#crypto-modal,
+#popup-modal {
+  @media screen and (min-width: 768px) {
+    top: 150px;
+    left: calc(50vw - 448px / 2);
+    // right: auto;
+  }
+}

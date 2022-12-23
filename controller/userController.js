@@ -56,6 +56,7 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
     { folder: "profile", public_id: req.params.userId },
     async function (error, result) {
       const user = await new User({
+        profileName: "",
         username: username,
         email: email,
         password: password,
@@ -107,7 +108,6 @@ exports.postFollow = expressAsyncHandler(async (req, res) => {
 
 exports.postFollowed = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.params.userId });
-  console.log(user);
   if (user.follower.includes(req.body.username)) {
     return;
   } else {
@@ -258,7 +258,6 @@ exports.postEditProfile = expressAsyncHandler(async (req, res) => {
       user.bio = bio;
     }
     if (gender !== user.gender) {
-      console.log(gender);
       if (gender === "null") {
         user.gender = null;
       } else {
@@ -285,4 +284,21 @@ exports.getProfilePicture = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.params.userId });
 
   res.redirect(user.picture);
+});
+
+exports.getFollowingList = expressAsyncHandler(async (req, res) => {
+  const username = await User.findOne({ username: req.headers.username });
+  let action;
+  if (req.headers.action === "following") {
+    action = username.following;
+  } else {
+    action = username.follower;
+  }
+  const data = await User.find({ username: { $in: action } });
+  res.send(data);
+});
+
+exports.getUserData = expressAsyncHandler(async (req, res) => {
+  const userData = await User.findOne({ username: req.headers.username });
+  res.send(userData);
 });

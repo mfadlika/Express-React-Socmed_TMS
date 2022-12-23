@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { sendPost } from "../store/actions/postAction";
 
@@ -26,18 +25,22 @@ export default function Comment(props) {
     }
   }, [isSent, dispatch, username, userInfo]);
   return (
-    <Form onSubmit={submitPostHandler} style={{ marginBottom: "15px" }}>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Control
+    <form
+      className="comment"
+      onSubmit={submitPostHandler}
+      style={{ marginBottom: "15px" }}
+    >
+      <div>
+        <input
           type="text"
           value={post}
           onChange={(e) => setPost(e.target.value)}
           placeholder="Write your comment here"
         />
-      </Form.Group>
-      <Button className="edit-button" type="submit">
-        Submit
-      </Button>
-    </Form>
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
   );
 }

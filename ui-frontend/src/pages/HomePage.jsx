@@ -54,7 +54,7 @@ export default function HomePage() {
   }, [isSent, dispatch, username, navigate, redirect, userInfo]);
   return (
     <div id="homepage">
-      <div>
+      <div id="home">
         <form onSubmit={submitPostHandler} style={{ marginBottom: "15px" }}>
           <div className="mb-3">
             <label>Hello {profileName ? profileName : username}!!!</label>

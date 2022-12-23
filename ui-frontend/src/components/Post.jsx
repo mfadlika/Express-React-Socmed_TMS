@@ -4,7 +4,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import svg from "../assets/svg-assets";
 import axios from "../axios";
-import style from "./Post.scss";
+import AffirmationModal from "./Modal.jsx/AffirmationModal";
+import style from "./post.scss";
 
 export default function Post(props) {
   const { love, loved, comment, xMark } = svg;
@@ -22,6 +23,7 @@ export default function Post(props) {
   );
   const [isDelete, setIsDelete] = useState(false);
   const { _id } = useParams();
+  const [toggleButton, setToggleButton] = useState(true);
 
   const navigate = useNavigate();
 
@@ -73,6 +75,10 @@ export default function Post(props) {
     }
   }
 
+  function toggleHandler() {
+    setToggleButton(!toggleButton);
+  }
+
   async function deletePost(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -91,7 +97,6 @@ export default function Post(props) {
 
   useEffect(() => {
     if (isDelete) {
-      console.log(isDelete);
       toast("Post has been deleted");
       setIsDelete(false);
       navigate("/");
@@ -129,7 +134,11 @@ export default function Post(props) {
             </p>
           </div>
           {props.username === usernameOwner && _id ? (
-            <button className="basis-1/5 del-button" onClick={deletePost}>
+            <button
+              data-modal-toggle="popup-modal"
+              className="basis-1/5 del-button"
+              onClick={toggleHandler}
+            >
               <div>{xMark}</div>
             </button>
           ) : null}
@@ -172,6 +181,11 @@ export default function Post(props) {
           </div>
         </div>
       </Link>
+      <AffirmationModal
+        deletePost={deletePost}
+        isHidden={toggleButton}
+        toggle={toggleHandler}
+      ></AffirmationModal>
     </div>
   );
 }
