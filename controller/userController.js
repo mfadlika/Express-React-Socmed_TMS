@@ -53,7 +53,7 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
   const password = bcrypt.hashSync(req.body.password);
   cloudinary.v2.uploader.upload(
     "images/unknown.jpeg",
-    { folder: "profile", public_id: req.params.userId },
+    { folder: "profile", public_id: req.body.username },
     async function (error, result) {
       const user = await new User({
         profileName: "",
@@ -62,7 +62,6 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
         password: password,
         picture: result.url,
       });
-
       user
         .save()
         .then(() => {
