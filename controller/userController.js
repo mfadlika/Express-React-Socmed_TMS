@@ -57,7 +57,8 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
     username: username,
     email: email,
     password: password,
-    picture: result.url,
+    picture:
+      "https://res.cloudinary.com/dvzdkh44j/image/upload/v1671743643/profile/unknown.jpg",
   });
   user
     .save()
