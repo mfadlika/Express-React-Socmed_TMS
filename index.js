@@ -42,7 +42,15 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-app.use(cors({ origin: true, credentials: true }));
+var whitelist = ["https://to-my.space"];
+var corsOptions = {
+  origin: function (origin, callback) {
+    var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+    callback(null, originIsWhitelisted);
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
