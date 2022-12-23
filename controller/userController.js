@@ -51,37 +51,32 @@ exports.postRegister = expressAsyncHandler(async (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = bcrypt.hashSync(req.body.password);
-  cloudinary.v2.uploader.upload(
-    "images/unknown.jpeg",
-    { folder: "profile", public_id: req.body.username },
-    async function (error, result) {
-      const user = await new User({
-        profileName: "",
-        username: username,
-        email: email,
-        password: password,
-        picture: result.url,
+
+  const user = await new User({
+    profileName: "",
+    username: username,
+    email: email,
+    password: password,
+    picture: result.url,
+  });
+  user
+    .save()
+    .then(() => {
+      res.send({
+        _id: user._id,
+        username: user.username,
+        profileName: user.profileName,
+        email: user.email,
+        bio: user.bio,
+        gender: user.gender,
+        following: user.following,
+        follower: user.follower,
+        token: generateToken(user),
       });
-      user
-        .save()
-        .then(() => {
-          res.send({
-            _id: user._id,
-            username: user.username,
-            profileName: user.profileName,
-            email: user.email,
-            bio: user.bio,
-            gender: user.gender,
-            following: user.following,
-            follower: user.follower,
-            token: generateToken(user),
-          });
-        })
-        .catch((err) => {
-          res.status(404).send({ message: err });
-        });
-    }
-  );
+    })
+    .catch((err) => {
+      res.status(404).send({ message: err });
+    });
 });
 
 exports.postFollow = expressAsyncHandler(async (req, res) => {
