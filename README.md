@@ -70,7 +70,7 @@ $ npm start
 - New Features
   - User can change profile picture
   - User can change profile name and bio
-  - Big UI ImprovementS
+  - Big UI Improvements
   - Mobile Friendly
   - Fixed some bugs
 
