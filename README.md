@@ -34,7 +34,13 @@ $ touch .env
   - Create database at [https://cloud.mongodb.com](https://cloud.mongodb.com)
   - In .env file update MONGODB_URI='mongodb+srv://your-db-connection'
 
-### 4. Run Backend
+### 4. Setup Cloudinary
+
+- Log in / Sign Up to Cloudinary
+  - In Cloudinary account, find 'Configure your SDK' and 'Start Configuring'
+  - In .env file update CLOUD_NAME, CLOUD_API_KEY and CLOUD_API_SECRET and fill it with cloud_name, api_key and api_secret respectively
+
+### 5. Run Backend
 
 - Set up port
   - In .env file update PORT=5050
@@ -46,7 +52,7 @@ $ npm install
 $ npm start
 ```
 
-### 5. Run Frontend
+### 6. Run Frontend
 
 ```
 # open new terminal
